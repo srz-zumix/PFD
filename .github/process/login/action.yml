@@ -1,5 +1,6 @@
 name: 'ログインする'
 description: 'トークン発行'
+
 inputs:
   user-id:
     description: 'ユーザーID'
@@ -7,6 +8,7 @@ inputs:
   password:
     description: 'パスワード'
     required: true
+
 outputs:
   user-token:
     description: "トークン"
@@ -14,6 +16,7 @@ outputs:
   user-table:
     description: "ユーザー情報テーブル"
     value: ${{ steps.update.outputs.user-info }}
+
 runs:
   using: "composite"
   steps:

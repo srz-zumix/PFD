@@ -6,9 +6,12 @@ jobs:
   signup:
     runs-on: ubuntu-latest
     name: "ユーザーを登録する"
+    outputs:
+      user-id: ${{ steps.signup.outputs.user-id }}
     steps:
       - uses: actions/checkout@v2
       - uses: ./.github/process/signup
+        id: signup
         with:
           mail-address: "test@test.jp"
           password: "passw0rd"

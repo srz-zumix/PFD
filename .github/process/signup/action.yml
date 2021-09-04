@@ -1,5 +1,6 @@
 name: 'ユーザーを登録する'
 description: 'ID 発行'
+
 inputs:
   mail-address:
     description: 'メールアドレス'
@@ -7,6 +8,7 @@ inputs:
   password:
     description: 'パスワード'
     required: true
+
 outputs:
   user-id:
     description: "ユーザーID"
@@ -14,6 +16,7 @@ outputs:
   user-table:
     description: "ユーザー情報テーブル"
     value: ${{ steps.signup.outputs.user-info }}
+
 runs:
   using: "composite"
   steps:
