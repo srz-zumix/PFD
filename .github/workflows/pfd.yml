@@ -19,7 +19,7 @@ jobs:
     needs: signup
     steps:
       - uses: actions/checkout@v2
-      - uses: ./.github/process/signup
+      - uses: ./.github/process/login
         with:
           user-id: ${{ needs.job1.outputs.user-id }}
           password: "passw0rd"
