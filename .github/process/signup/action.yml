@@ -11,9 +11,14 @@ outputs:
   user-id:
     description: "ユーザーID"
     value: ${{ steps.signup.outputs.random-id }}
+  user-table:
+    description: "ユーザー情報テーブル"
+    value: ${{ steps.signup.outputs.user-info }}
 runs:
   using: "composite"
   steps:
     - id: signup
-      run: echo "::set-output name=random-id::$(echo $RANDOM)"
+      run: |
+        echo "::set-output name=random-id::$(echo $RANDOM)"
+        echo "::set-output name=user-info::$(echo ${{ inputs.mail-address }}, ${{ inputs.password }})"
       shell: bash

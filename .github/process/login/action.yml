@@ -1,0 +1,27 @@
+name: 'ログインする'
+description: 'トークン発行'
+inputs:
+  user-id:
+    description: 'ユーザーID'
+    required: true
+  password:
+    description: 'パスワード'
+    required: true
+outputs:
+  user-token:
+    description: "トークン"
+    value: ${{ steps.login.outputs.random-id }}
+  user-table:
+    description: "ユーザー情報テーブル"
+    value: ${{ steps.update.outputs.user-info }}
+runs:
+  using: "composite"
+  steps:
+    - id: login
+      run: |
+        echo "::set-output name=random-id::$(echo $RANDOM)"
+      shell: bash
+    - id: update
+      run: |
+        echo "::set-output name=user-info::$(echo ${{ inputs.mail-address }}, ${{ inputs.password }}, ${{ steps.login.outputs.random-id }})"
+      shell: bash

@@ -3,12 +3,24 @@ on:
   push:
 
 jobs:
-  project:
+  signup:
     runs-on: ubuntu-latest
+    name: "ユーザーを登録する"
     steps:
       - uses: actions/checkout@v2
       - uses: ./.github/process/signup
         with:
           mail-address: "test@test.jp"
           password: "passw0rd"
-                
+
+  login:
+    runs-on: ubuntu-latest
+    name: "ログインする"
+    need: signup
+    steps:
+      - uses: actions/checkout@v2
+      - uses: ./.github/process/signup
+        with:
+          user-id: ${{ needs.job1.outputs.user-id }}
+          password: "passw0rd"
+
