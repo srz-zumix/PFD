@@ -24,7 +24,7 @@ runs:
       env:
         INPUTS_CONTEXT: ${{ toJson(inputs) }}
       run: |
-        echo "$INPUTS_CONTEXT"
+        echo "$INPUTS_CONTEXT" | grep '""'
       shell: bash
     - id: login
       run: |

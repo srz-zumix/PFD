@@ -20,12 +20,6 @@ outputs:
 runs:
   using: "composite"
   steps:
-    - name: $inputs
-      env:
-        INPUTS_CONTEXT: ${{ toJson(inputs) }}
-      run: |
-        echo "$INPUTS_CONTEXT"
-      shell: bash
     - id: signup
       run: |
         echo "::set-output name=random-id::$(echo $RANDOM)"
