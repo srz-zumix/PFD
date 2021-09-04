@@ -1,0 +1,19 @@
+name: 'ユーザーを登録する'
+description: 'ID 発行'
+inputs:
+  mail-address:
+    description: 'メールアドレス'
+    required: true
+  password:
+    description: 'パスワード'
+    required: true
+outputs:
+  user-id:
+    description: "ユーザーID"
+    value: ${{ steps.signup.outputs.random-id }}
+runs:
+  using: "composite"
+  steps:
+    - id: signup
+      run: echo "::set-output name=random-id::$(echo $RANDOM)"
+      shell: bash

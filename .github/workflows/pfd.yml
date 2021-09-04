@@ -1,0 +1,14 @@
+name: Process Flow Diagram
+on:
+  push:
+
+jobs:
+  project:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: ./.github/actions/composite/setup-win-llvm
+        with:
+          mail-address: "test@test.jp"
+          password: "passw0rd"
+                
