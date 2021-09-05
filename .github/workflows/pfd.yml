@@ -6,8 +6,8 @@ jobs:
   signup:
     runs-on: ubuntu-latest
     name: "ユーザーを登録する"
-    outputs:
-      user-id: ${{ steps.signup.outputs.user-id }}
+    # outputs:
+    #   user-id: ${{ steps.signup.outputs.user-id }}
     steps:
       - uses: actions/checkout@v2
       - id: signup
