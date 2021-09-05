@@ -1,3 +1,6 @@
+# https://www.cresco.co.jp/blog/entry/16642/
+# 上記記事のサンプル PFD を模倣しました
+
 name: Process Flow Diagram
 on:
   push:
