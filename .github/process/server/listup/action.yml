@@ -1,0 +1,40 @@
+name: 'ユーザーIDに紐付いたデータ一覧を返す'
+description: '登録済みデータ一覧'
+
+inputs:
+  user-token:
+    description: 'ユーザートークン'
+    required: true
+  user-table:
+    description: 'ユーザー情報'
+    required: true
+  data-table:
+    description: 'データ格納テーブル'
+    required: true
+  request:
+    description: '暗号化リクエスト'
+    required: true
+
+outputs:
+  data-list:
+    description: "登録済みデータ一覧"
+    value: ${{ steps.register.outputs.data-list }}
+
+runs:
+  using: "composite"
+  steps:
+    - name: Check $inputs
+      env:
+        INPUTS_CONTEXT: ${{ toJson(inputs) }}
+      run: |
+        echo "$INPUTS_CONTEXT" | (! grep '""')
+      shell: bash
+    - id: getid
+      # ユーザー情報から取り出した ID 
+      run: |
+        echo "::set-output name=id::$(echo $RANDOM)"
+      shell: bash
+    - id: register
+      run: |
+        echo "::set-output name=data-list::$(echo list)"
+      shell: bash

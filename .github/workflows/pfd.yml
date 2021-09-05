@@ -100,3 +100,22 @@ jobs:
         with:
           user-token: ${{ needs.login-on-device.outputs.user-token }}
           operation: "request"
+
+  listup:
+    runs-on: ubuntu-latest
+    name: "ユーザーIDに紐付いたデータ一覧を返す"
+    needs:
+      - login-on-device
+      - request
+      - register
+    outputs:
+      request: ${{ steps.listup.outputs.data-list }}
+    steps:
+      - uses: actions/checkout@v2
+      - id: listup
+        uses: ./.github/process/server/listup
+        with:
+          user-token: ${{ needs.login-on-device.outputs.user-token }}
+          user-table: ${{ needs.login-on-device.outputs.user-table }}
+          request: ${{ needs.request.outputs.request }}
+          data-table: ${{ needs.register.outputs.data-table }}
