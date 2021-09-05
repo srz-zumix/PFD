@@ -57,5 +57,5 @@ jobs:
         with:
           user-token: ${{ needs.login.outputs.user-token }}
           user-table: ${{ needs.login.outputs.user-table }}
-          enctyped-data: ${{ needs.encrypt.outputs.encrypted-data }}
+          encrypted-data: ${{ needs.encrypt.outputs.encrypted-data }}
 
