@@ -90,6 +90,7 @@ jobs:
   request:
     runs-on: ubuntu-latest
     name: "リクエスト"
+    needs: login-on-device
     outputs:
       request: ${{ steps.request.outputs.request }}
     steps:
