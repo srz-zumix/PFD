@@ -1,0 +1,37 @@
+name: '暗号化データを登録する'
+description: 'データファイル格納テーブル'
+
+inputs:
+  user-token:
+    description: 'ユーザートークン'
+    required: true
+  user-table:
+    description: 'ユーザー情報'
+    required: true
+  encrypted-data:
+    description: '暗号化データ'
+    required: true
+
+outputs:
+  data-table:
+    description: "データ格納テーブル"
+    value: ${{ steps.register.outputs.data-table }}
+
+runs:
+  using: "composite"
+  steps:
+    - name: Check $inputs
+      env:
+        INPUTS_CONTEXT: ${{ toJson(inputs) }}
+      run: |
+        echo "$INPUTS_CONTEXT" | (! grep '""')
+      shell: bash
+    - id: getid
+      # ユーザー情報から取り出した ID 
+      run: |
+        echo "::set-output name=id::$(echo $RANDOM)"
+      shell: bash
+    - id: register
+      run: |
+        echo "::set-output name=data-table::$(echo ${{ steps.getid.outputs.id }}, ${{ inputs.encrypted-data }})"
+      shell: bash

@@ -22,6 +22,7 @@ jobs:
     needs: signup
     outputs:
       user-token: ${{ steps.login.outputs.user-token }}
+      user-table: ${{ steps.login.outputs.user-table }}
     steps:
       - uses: actions/checkout@v2
       - id: login
@@ -34,10 +35,26 @@ jobs:
     runs-on: ubuntu-latest
     name: "ツールでデータを暗号化する"
     needs: login
+    outputs:
+      encrypted-data: ${{ steps.login.outputs.encrypted-data }}
     steps:
       - uses: actions/checkout@v2
       - uses: ./.github/process/encrypt
         with:
           user-token: ${{ needs.login.outputs.user-token }}
           data: "testdata"
+
+  register:
+    runs-on: ubuntu-latest
+    name: "データを登録する"
+    needs:
+      - login
+      - encrypt
+    steps:
+      - uses: actions/checkout@v2
+      - uses: ./.github/process/register
+        with:
+          user-token: ${{ needs.login.outputs.user-token }}
+          user-table: ${{ needs.login.outputs.user-table }}
+          enctyped-data: ${{ needs.encrypt.outputs.encrypted-data }}
 
