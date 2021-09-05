@@ -20,7 +20,7 @@ outputs:
 runs:
   using: "composite"
   steps:
-    - name: $inputs
+    - name: Check $inputs
       env:
         INPUTS_CONTEXT: ${{ toJson(inputs) }}
       run: |
