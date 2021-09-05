@@ -51,9 +51,12 @@ jobs:
     needs:
       - login
       - encrypt
+    outputs:
+      data-table: ${{ steps.register.outputs.data-table }}
     steps:
       - uses: actions/checkout@v2
-      - uses: ./.github/process/server/register
+      - id: register
+        uses: ./.github/process/server/register
         with:
           user-token: ${{ needs.login.outputs.user-token }}
           user-table: ${{ needs.login.outputs.user-table }}
