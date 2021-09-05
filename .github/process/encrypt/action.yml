@@ -1,0 +1,29 @@
+name: 'ツールでデータを暗号化する'
+description: '暗号化ファイル'
+
+inputs:
+  user-token:
+    description: 'ユーザートークン'
+    required: true
+  data:
+    description: 'データ'
+    required: true
+
+outputs:
+  encrypted-data:
+    description: "暗号化データ"
+    value: ${{ steps.encrypt.outputs.random-id }}
+
+runs:
+  using: "composite"
+  steps:
+    - name: Check $inputs
+      env:
+        INPUTS_CONTEXT: ${{ toJson(inputs) }}
+      run: |
+        echo "$INPUTS_CONTEXT" | (! grep '""')
+      shell: bash
+    - id: encrypt
+      run: |
+        echo "::set-output name=random-id::$(echo $RANDOM)"
+      shell: bash

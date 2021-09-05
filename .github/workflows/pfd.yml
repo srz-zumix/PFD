@@ -20,10 +20,24 @@ jobs:
     runs-on: ubuntu-latest
     name: "ログインする"
     needs: signup
+    outputs:
+      user-token: ${{ steps.login.outputs.user-token }}
     steps:
       - uses: actions/checkout@v2
-      - uses: ./.github/process/login
+      - id: login
+        uses: ./.github/process/login
         with:
           user-id: ${{ needs.signup.outputs.user-id }}
           password: "passw0rd"
+
+  encrypt:
+    runs-on: ubuntu-latest
+    name: "ツールでデータを暗号化する"
+    needs: login
+    steps:
+      - uses: actions/checkout@v2
+      - uses: ./.github/process/encrypt
+        with:
+          user-token: ${{ needs.login.outputs.user-token }}
+          data: "testdata"
 
