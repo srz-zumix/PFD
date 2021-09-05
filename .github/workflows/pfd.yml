@@ -8,6 +8,7 @@ jobs:
     name: "ユーザーを登録する"
     outputs:
       user-id: ${{ steps.signup.outputs.user-id }}
+      user-table: ${{ steps.signup.outputs.user-table }}
     steps:
       - uses: actions/checkout@v2
       - id: signup
@@ -29,6 +30,7 @@ jobs:
         uses: ./.github/process/server/login
         with:
           user-id: ${{ needs.signup.outputs.user-id }}
+          user-table: ${{ needs.signup.outputs.user-table }}
           password: "passw0rd"
 
   encrypt:
@@ -67,6 +69,7 @@ jobs:
     name: "ユーザーを登録する"
     outputs:
       user-id: ${{ steps.signup.outputs.user-id }}
+      user-table: ${{ steps.signup.outputs.user-table }}
     steps:
       - uses: actions/checkout@v2
       - id: signup
@@ -88,6 +91,7 @@ jobs:
         uses: ./.github/process/server/login
         with:
           user-id: ${{ needs.signup-on-device.outputs.user-id }}
+          user-table: ${{ needs.signup-on-device.outputs.user-table }}
           password: "passw0rd"
 
   request:

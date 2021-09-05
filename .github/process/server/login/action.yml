@@ -8,6 +8,9 @@ inputs:
   password:
     description: 'パスワード'
     required: true
+  user-table:
+    description: 'ユーザー情報'
+    required: true
 
 outputs:
   user-token:
@@ -32,5 +35,5 @@ runs:
       shell: bash
     - id: update
       run: |
-        echo "::set-output name=user-info::$(echo ${{ inputs.mail-address }}, ${{ inputs.password }}, ${{ steps.login.outputs.random-id }})"
+        echo "::set-output name=user-info::$(echo ${{ inputs.user-table }}, ${{ steps.login.outputs.random-id }})"
       shell: bash
