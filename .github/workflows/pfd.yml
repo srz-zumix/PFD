@@ -11,7 +11,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - id: signup
-        uses: ./.github/process/signup
+        uses: ./.github/process/server/signup
         with:
           mail-address: "test@test.jp"
           password: "passw0rd"
@@ -26,7 +26,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - id: login
-        uses: ./.github/process/login
+        uses: ./.github/process/server/login
         with:
           user-id: ${{ needs.signup.outputs.user-id }}
           password: "passw0rd"
@@ -40,7 +40,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - id: encrypt
-        uses: ./.github/process/encrypt
+        uses: ./.github/process/admin/encrypt
         with:
           user-token: ${{ needs.login.outputs.user-token }}
           data: "testdata"
@@ -53,9 +53,49 @@ jobs:
       - encrypt
     steps:
       - uses: actions/checkout@v2
-      - uses: ./.github/process/register
+      - uses: ./.github/process/server/register
         with:
           user-token: ${{ needs.login.outputs.user-token }}
           user-table: ${{ needs.login.outputs.user-table }}
           encrypted-data: ${{ needs.encrypt.outputs.encrypted-data }}
 
+  signup-on-device:
+    runs-on: ubuntu-latest
+    name: "ユーザーを登録する"
+    outputs:
+      user-id: ${{ steps.signup.outputs.user-id }}
+    steps:
+      - uses: actions/checkout@v2
+      - id: signup
+        uses: ./.github/process/server/signup
+        with:
+          mail-address: "test@test.jp"
+          password: "passw0rd"
+
+  login-on-device:
+    runs-on: ubuntu-latest
+    name: "ログインする"
+    needs: signup-on-device
+    outputs:
+      user-token: ${{ steps.login.outputs.user-token }}
+      user-table: ${{ steps.login.outputs.user-table }}
+    steps:
+      - uses: actions/checkout@v2
+      - id: login
+        uses: ./.github/process/server/login
+        with:
+          user-id: ${{ needs.signup-on-device.outputs.user-id }}
+          password: "passw0rd"
+
+  request:
+    runs-on: ubuntu-latest
+    name: "リクエスト"
+    outputs:
+      request: ${{ steps.request.outputs.request }}
+    steps:
+      - uses: actions/checkout@v2
+      - id: request
+        uses: ./.github/process/device/request
+        with:
+          user-token: ${{ needs.login-on-device.outputs.user-token }}
+          operation: "request"

@@ -1,0 +1,29 @@
+name: 'デバイスが通信データを暗号化する'
+description: '暗号化リクエスト'
+
+inputs:
+  user-token:
+    description: 'ユーザートークン'
+    required: true
+  operation:
+    description: 'ユーザー操作'
+    required: true
+
+outputs:
+  request:
+    description: "暗号化リクエスト"
+    value: ${{ steps.request.outputs.random-id }}
+
+runs:
+  using: "composite"
+  steps:
+    - name: Check $inputs
+      env:
+        INPUTS_CONTEXT: ${{ toJson(inputs) }}
+      run: |
+        echo "$INPUTS_CONTEXT" | (! grep '""')
+      shell: bash
+    - id: request
+      run: |
+        echo "::set-output name=random-id::$(echo $RANDOM)"
+      shell: bash
