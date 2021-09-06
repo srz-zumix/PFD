@@ -1,0 +1,39 @@
+name: 'ログインする'
+description: 'トークン発行'
+
+inputs:
+  user-id:
+    description: 'ユーザーID'
+    required: true
+  password:
+    description: 'パスワード'
+    required: true
+  user-table:
+    description: 'ユーザー情報'
+    required: true
+
+outputs:
+  user-token:
+    description: "トークン"
+    value: ${{ steps.login.outputs.random-id }}
+  user-table:
+    description: "ユーザー情報テーブル"
+    value: ${{ steps.update.outputs.user-info }}
+
+runs:
+  using: "composite"
+  steps:
+    - name: Check $inputs
+      env:
+        INPUTS_CONTEXT: ${{ toJson(inputs) }}
+      run: |
+        echo "$INPUTS_CONTEXT" | (! grep '""')
+      shell: bash
+    - id: login
+      run: |
+        echo "::set-output name=random-id::$(echo $RANDOM)"
+      shell: bash
+    - id: update
+      run: |
+        echo "::set-output name=user-info::$(echo ${{ inputs.user-table }}, ${{ steps.login.outputs.random-id }})"
+      shell: bash

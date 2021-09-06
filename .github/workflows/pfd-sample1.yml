@@ -1,0 +1,131 @@
+# https://www.cresco.co.jp/blog/entry/16642/
+# 上記記事のサンプル PFD を模倣しました
+
+name: Process Flow Diagram
+on:
+  push:
+
+jobs:
+  signup:
+    runs-on: ubuntu-latest
+    name: "ユーザーを登録する"
+    outputs:
+      user-id: ${{ steps.signup.outputs.user-id }}
+      user-table: ${{ steps.signup.outputs.user-table }}
+    steps:
+      - uses: actions/checkout@v2
+      - id: signup
+        uses: ./.github/process/server/signup
+        with:
+          mail-address: "test@test.jp"
+          password: "passw0rd"
+
+  login:
+    runs-on: ubuntu-latest
+    name: "ログインする"
+    needs: signup
+    outputs:
+      user-token: ${{ steps.login.outputs.user-token }}
+      user-table: ${{ steps.login.outputs.user-table }}
+    steps:
+      - uses: actions/checkout@v2
+      - id: login
+        uses: ./.github/process/server/login
+        with:
+          user-id: ${{ needs.signup.outputs.user-id }}
+          user-table: ${{ needs.signup.outputs.user-table }}
+          password: "passw0rd"
+
+  encrypt:
+    runs-on: ubuntu-latest
+    name: "ツールでデータを暗号化する"
+    needs: login
+    outputs:
+      encrypted-data: ${{ steps.encrypt.outputs.encrypted-data }}
+    steps:
+      - uses: actions/checkout@v2
+      - id: encrypt
+        uses: ./.github/process/admin/encrypt
+        with:
+          user-token: ${{ needs.login.outputs.user-token }}
+          data: "testdata"
+
+  register:
+    runs-on: ubuntu-latest
+    name: "データを登録する"
+    needs:
+      - login
+      - encrypt
+    outputs:
+      data-table: ${{ steps.register.outputs.data-table }}
+    steps:
+      - uses: actions/checkout@v2
+      - id: register
+        uses: ./.github/process/server/register
+        with:
+          user-token: ${{ needs.login.outputs.user-token }}
+          user-table: ${{ needs.login.outputs.user-table }}
+          encrypted-data: ${{ needs.encrypt.outputs.encrypted-data }}
+
+  signup-on-device:
+    runs-on: ubuntu-latest
+    name: "ユーザーを登録する"
+    outputs:
+      user-id: ${{ steps.signup.outputs.user-id }}
+      user-table: ${{ steps.signup.outputs.user-table }}
+    steps:
+      - uses: actions/checkout@v2
+      - id: signup
+        uses: ./.github/process/server/signup
+        with:
+          mail-address: "test@test.jp"
+          password: "passw0rd"
+
+  login-on-device:
+    runs-on: ubuntu-latest
+    name: "ログインする"
+    needs: signup-on-device
+    outputs:
+      user-token: ${{ steps.login.outputs.user-token }}
+      user-table: ${{ steps.login.outputs.user-table }}
+    steps:
+      - uses: actions/checkout@v2
+      - id: login
+        uses: ./.github/process/server/login
+        with:
+          user-id: ${{ needs.signup-on-device.outputs.user-id }}
+          user-table: ${{ needs.signup-on-device.outputs.user-table }}
+          password: "passw0rd"
+
+  request:
+    runs-on: ubuntu-latest
+    name: "デバイスが通信データを暗号化する"
+    needs: login-on-device
+    outputs:
+      request: ${{ steps.request.outputs.request }}
+    steps:
+      - uses: actions/checkout@v2
+      - id: request
+        uses: ./.github/process/device/request
+        with:
+          user-token: ${{ needs.login-on-device.outputs.user-token }}
+          operation: "request"
+
+  listup:
+    runs-on: ubuntu-latest
+    name: "ユーザーIDに紐付いたデータ一覧を返す"
+    needs:
+      - login-on-device
+      - request
+      - register
+    outputs:
+      request: ${{ steps.listup.outputs.data-list }}
+    steps:
+      - uses: actions/checkout@v2
+      - id: listup
+        uses: ./.github/process/server/listup
+        with:
+          user-token: ${{ needs.login-on-device.outputs.user-token }}
+          user-table: ${{ needs.login-on-device.outputs.user-table }}
+          request: ${{ needs.request.outputs.request }}
+          data-table: ${{ needs.register.outputs.data-table }}

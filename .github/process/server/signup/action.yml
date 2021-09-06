@@ -1,0 +1,33 @@
+name: 'ユーザーを登録する'
+description: 'ID 発行'
+
+inputs:
+  mail-address:
+    description: 'メールアドレス'
+    required: true
+  password:
+    description: 'パスワード'
+    required: true
+
+outputs:
+  user-id:
+    description: "ユーザーID"
+    value: ${{ steps.signup.outputs.random-id }}
+  user-table:
+    description: "ユーザー情報テーブル"
+    value: ${{ steps.signup.outputs.user-info }}
+
+runs:
+  using: "composite"
+  steps:
+    - name: Check $inputs
+      env:
+        INPUTS_CONTEXT: ${{ toJson(inputs) }}
+      run: |
+        echo "$INPUTS_CONTEXT" | (! grep '""')
+      shell: bash
+    - id: signup
+      run: |
+        echo "::set-output name=random-id::$(echo $RANDOM)"
+        echo "::set-output name=user-info::$(echo ${{ inputs.mail-address }}, ${{ inputs.password }})"
+      shell: bash
